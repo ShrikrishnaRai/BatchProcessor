@@ -13,5 +13,7 @@ public interface PersonService {
 
     String savePersonBulk(List<Person> personList);
 
-    String savePerson(Person person);
+    Person savePerson(Person person);
+
+    String deletePerson(long personId);
 }
