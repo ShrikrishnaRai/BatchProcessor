@@ -5,11 +5,12 @@ import lombok.*;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
+import java.util.UUID;
 
+@AllArgsConstructor
 @Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "people")

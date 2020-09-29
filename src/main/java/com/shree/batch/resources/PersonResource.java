@@ -2,6 +2,8 @@ package com.shree.batch.resources;
 
 import com.shree.batch.model.Person;
 import com.shree.batch.services.person.PersonService;
+import com.shree.batch.utils.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping(value = "/person")
 public class PersonResource {
 
-    private final PersonService personService;
+    @Autowired
+    private PersonService personService;
 
-    public PersonResource(PersonService personService) {
-        this.personService = personService;
-    }
 
     @GetMapping("/{personId}")
     public ResponseEntity<Person> getPersonById(@PathVariable long personId) {
@@ -33,9 +33,9 @@ public class PersonResource {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<String> savePersonBulk(@RequestBody List<Person> personList) {
+    public ResponseEntity<Response> savePersonBulk(@RequestBody List<Person> personList) {
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(personService.savePersonBulk(personList));
     }
 
@@ -46,7 +46,7 @@ public class PersonResource {
     }
 
     @DeleteMapping("/{personId}")
-    public ResponseEntity<String> deletePersonById(@PathVariable long personId) {
+    public ResponseEntity<Response> deletePersonById(@PathVariable long personId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(personService.deletePerson(personId));
     }
