@@ -42,7 +42,6 @@ class PersonServiceImplTest {
 
     @Test
     void getPerson() {
-        PersonEntity personEntity = personRepository.getOne(1l);
     }
 
     @Test

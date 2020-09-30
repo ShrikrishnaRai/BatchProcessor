@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface PersonService {
-    List<Person> listPerson();
+    List<Person> listPerson(int page, int limit);
 
     Person getPerson(long personId);
 
@@ -17,4 +17,5 @@ public interface PersonService {
     Person savePerson(Person person);
 
     Response deletePerson(long personId);
+
 }

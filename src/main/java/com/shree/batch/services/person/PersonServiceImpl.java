@@ -7,9 +7,13 @@ import com.shree.batch.exceptions.PersonNotFoundException;
 import com.shree.batch.model.Person;
 import com.shree.batch.repository.PersonRepository;
 import com.shree.batch.utils.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,14 +32,13 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Person> listPerson() {
-        return personRepository
-                .findAll()
+    public List<Person> listPerson(int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<PersonEntity> personPage = personRepository.findAll(pageable);
+        List<PersonEntity> personList = personPage.getContent();
+        return personList
                 .stream()
-                .map(personEntity ->
-                        mapper.map(personEntity, Person.class)
-                )
-                .collect(Collectors.toList());
+                .map(personEntity -> mapper.map(personEntity, Person.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -76,4 +79,5 @@ public class PersonServiceImpl implements PersonService {
         personRepository.deleteById(personId);
         return new Response("deleted person with id " + personId);
     }
+
 }

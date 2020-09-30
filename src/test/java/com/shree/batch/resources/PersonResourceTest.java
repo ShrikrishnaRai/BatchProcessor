@@ -74,7 +74,7 @@ class PersonResourceTest {
         personList.add(new Person("Klopp", "Jurgen"));
         personList.add(new Person("Salaah", "Mo"));
 
-        when(personService.listPerson()).thenReturn(personList);
+        when(personService.listPerson(1, 25)).thenReturn(personList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/person")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -127,6 +127,6 @@ class PersonResourceTest {
         ResultActions resultActions = mockMvc.perform(delete("/person/1"));
 
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("deleted person with id "+1));
+                .andExpect(jsonPath("$.message").value("deleted person with id " + 1));
     }
 }
