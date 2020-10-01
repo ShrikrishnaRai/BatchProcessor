@@ -18,4 +18,8 @@ public interface PersonService {
 
     Response deletePerson(long personId);
 
+    Person findPersonByEmail(String email);
+
+    Person findPersonByFirstName(String firstName);
+
 }

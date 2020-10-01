@@ -31,6 +31,24 @@ public class PersonResource {
                         .add(linkTo(methodOn(PersonResource.class).getPersonById(personId)).withSelfRel().withType("GET")));
     }
 
+    @GetMapping("/firstName")
+    public ResponseEntity<Person> getPersonByFirstName(@RequestParam String firstName) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(personService.findPersonByFirstName(firstName)
+                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25)).withRel("list").withType("GET"))
+                        .add(linkTo(methodOn(PersonResource.class).getPersonByFirstName(firstName)).withSelfRel().withType("GET")));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<Person> getPersonByEmail(@RequestParam String email) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(personService.findPersonByEmail(email)
+                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25)).withRel("list").withType("GET"))
+                        .add(linkTo(methodOn(PersonResource.class).getPersonByEmail(email)).withSelfRel().withType("GET")));
+    }
+
     @GetMapping
     public ResponseEntity<List<Person>> getPersonList(@RequestParam(value = "page", defaultValue = "0") int page,
                                                       @RequestParam(value = "limit", defaultValue = "25") int value) {

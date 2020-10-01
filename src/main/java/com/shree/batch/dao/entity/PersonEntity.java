@@ -22,6 +22,8 @@ public class PersonEntity {
     private long id;
     private String lastName;
     private String firstName;
+    private String email;
+
 
     public PersonEntity(String lastName, String firstName) {
         this.lastName = lastName;

@@ -49,7 +49,6 @@ public class PersonServiceImpl implements PersonService {
             return mapper.map(personOptional.get(), Person.class);
         }
         throw new PersonNotFoundException("Person with " + personId + "Not found");
-        //        return mapper.map(personRepository.findById(personId).orElse(null), Person.class);
     }
 
     @Override
@@ -78,6 +77,26 @@ public class PersonServiceImpl implements PersonService {
     public Response deletePerson(long personId) {
         personRepository.deleteById(personId);
         return new Response("deleted person with id " + personId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Person findPersonByEmail(String email) {
+        Optional<PersonEntity> personEntity = personRepository.findPersonEntitiesByEmail(email);
+        if (personEntity.isPresent()) {
+            return mapper.map(personRepository.findPersonEntitiesByEmail(email), Person.class);
+        }
+        throw new PersonNotFoundException("Person with email::" + email + "not found");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Person findPersonByFirstName(String firstName) {
+        Optional<PersonEntity> personEntity = personRepository.findPersonEntitiesByFirstName(firstName);
+        if (personEntity.isPresent()) {
+            return mapper.map(personRepository.findPersonEntitiesByFirstName(firstName), Person.class);
+        }
+        throw new PersonNotFoundException("Person with firstName::" + firstName + "not found");
     }
 
 }
