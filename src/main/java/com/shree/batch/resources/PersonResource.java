@@ -1,13 +1,13 @@
 package com.shree.batch.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shree.batch.model.Person;
 import com.shree.batch.services.person.PersonService;
 import com.shree.batch.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -74,5 +74,31 @@ public class PersonResource {
     public ResponseEntity<Response> deletePersonById(@PathVariable long personId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(personService.deletePerson(personId));
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadPersonData(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                    @RequestParam(value = "limit", defaultValue = "25") int limit) throws Exception {
+        byte[] personByte = personService.downloadPersonDetails(page, limit);
+        String fileName = "person.json";
+        HttpHeaders respHeaders = new HttpHeaders();
+        respHeaders.setContentLength(personByte.length);
+        respHeaders.setContentType(new MediaType("text", "json"));
+        respHeaders.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        respHeaders.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        return new ResponseEntity<>(personByte, respHeaders, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/upload")
+    public ResponseEntity<String> uploadPersonData(
+            @RequestParam("data") final MultipartFile multipartFile) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Hello World");
+    }
+
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Person> updateVehicle(@PathVariable(value = "id") long id,
+                                                         @RequestBody Person person){
+        return new ResponseEntity<>(personService.updateVehicle(id, person), HttpStatus.OK);
     }
 }

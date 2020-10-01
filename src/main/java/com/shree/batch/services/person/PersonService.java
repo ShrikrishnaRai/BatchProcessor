@@ -1,5 +1,6 @@
 package com.shree.batch.services.person;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.shree.batch.dao.entity.PersonEntity;
 import com.shree.batch.model.Person;
 import com.shree.batch.utils.Response;
@@ -22,4 +23,7 @@ public interface PersonService {
 
     Person findPersonByFirstName(String firstName);
 
+    byte[] downloadPersonDetails(int page, int limit) throws JsonProcessingException;
+
+    Person updateVehicle(long id, Person person);
 }

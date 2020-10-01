@@ -1,5 +1,7 @@
 package com.shree.batch.services.person;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import com.shree.batch.dao.entity.PersonEntity;
@@ -10,6 +12,8 @@ import com.shree.batch.utils.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    Mapper mapper;
+    private final Mapper mapper;
 
     private final PersonRepository personRepository;
 
@@ -97,6 +101,27 @@ public class PersonServiceImpl implements PersonService {
             return mapper.map(personRepository.findPersonEntitiesByFirstName(firstName), Person.class);
         }
         throw new PersonNotFoundException("Person with firstName::" + firstName + "not found");
+    }
+
+    @Override
+    public byte[] downloadPersonDetails(int page, int limit) throws JsonProcessingException {
+        List<Person> employees = this.listPerson(page, limit);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(employees);
+        return json.getBytes();
+    }
+
+    @Override
+    public Person updateVehicle(long id, Person person) {
+        if (personRepository.findById(id).isPresent()) {
+            PersonEntity personEntity = personRepository.findById(id).get();
+            personEntity.setLastName(person.getLastName());
+            personEntity.setFirstName(person.getFirstName());
+            personEntity.setEmail(person.getEmail());
+            PersonEntity personEntity1 = personRepository.save(personEntity);
+            return mapper.map(personEntity1, Person.class);
+        }
+        throw new PersonNotFoundException("Person with id::" + id + "not found");
     }
 
 }
