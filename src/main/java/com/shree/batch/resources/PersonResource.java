@@ -27,7 +27,7 @@ public class PersonResource {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(personService.getPerson(personId)
-                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25)).withRel("list").withType("GET"))
+                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25, "")).withRel("list").withType("GET"))
                         .add(linkTo(methodOn(PersonResource.class).getPersonById(personId)).withSelfRel().withType("GET")));
     }
 
@@ -36,7 +36,7 @@ public class PersonResource {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(personService.findPersonByFirstName(firstName)
-                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25)).withRel("list").withType("GET"))
+                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25, "")).withRel("list").withType("GET"))
                         .add(linkTo(methodOn(PersonResource.class).getPersonByFirstName(firstName)).withSelfRel().withType("GET")));
     }
 
@@ -45,16 +45,17 @@ public class PersonResource {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(personService.findPersonByEmail(email)
-                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25)).withRel("list").withType("GET"))
+                        .add(linkTo(methodOn(PersonResource.class).getPersonList(0, 25, "")).withRel("list").withType("GET"))
                         .add(linkTo(methodOn(PersonResource.class).getPersonByEmail(email)).withSelfRel().withType("GET")));
     }
 
     @GetMapping
     public ResponseEntity<List<Person>> getPersonList(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                      @RequestParam(value = "limit", defaultValue = "25") int value) {
+                                                      @RequestParam(value = "limit", defaultValue = "25") int value,
+                                                      @RequestParam(value = "sortBy") String sortBy) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(personService.listPerson(page, value));
+                .body(personService.listPerson(page, value, sortBy));
     }
 
     @PostMapping("/list")
@@ -78,7 +79,7 @@ public class PersonResource {
 
     @GetMapping("/download")
     public ResponseEntity<byte[]> downloadPersonData(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                    @RequestParam(value = "limit", defaultValue = "25") int limit) throws Exception {
+                                                     @RequestParam(value = "limit", defaultValue = "25") int limit) throws Exception {
         byte[] personByte = personService.downloadPersonDetails(page, limit);
         String fileName = "person.json";
         HttpHeaders respHeaders = new HttpHeaders();
@@ -98,7 +99,7 @@ public class PersonResource {
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> updateVehicle(@PathVariable(value = "id") long id,
-                                                         @RequestBody Person person){
+                                                @RequestBody Person person) {
         return new ResponseEntity<>(personService.updateVehicle(id, person), HttpStatus.OK);
     }
 }

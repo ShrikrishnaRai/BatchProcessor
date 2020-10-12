@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface PersonService {
-    List<Person> listPerson(int page, int limit);
+    List<Person> listPerson(int page, int limit, String sortBy);
 
     Person getPerson(long personId);
 

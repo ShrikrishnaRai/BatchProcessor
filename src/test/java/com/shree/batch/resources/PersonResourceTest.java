@@ -74,7 +74,7 @@ class PersonResourceTest {
         personList.add(new Person("Klopp", "Jurgen"));
         personList.add(new Person("Salaah", "Mo"));
 
-        when(personService.listPerson(1, 25)).thenReturn(personList);
+        when(personService.listPerson(1, 25,"")).thenReturn(personList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/person")
                 .contentType(MediaType.APPLICATION_JSON))

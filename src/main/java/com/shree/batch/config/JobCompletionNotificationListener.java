@@ -1,4 +1,4 @@
-package com.shree.batch.config.person;
+package com.shree.batch.config;
 
 import com.shree.batch.dao.entity.PersonEntity;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
             jdbcTemplate.query("SELECT first_name,last_name FROM people",
                     (rs,row)->new PersonEntity(rs.getString(1),
                             rs.getString(2))
-                    ).forEach(personEntity ->  log.info("Found <" + personEntity + "> in the database."));
+            ).forEach(personEntity ->  log.info("Found <" + personEntity + "> in the database."));
         }
     }
 }

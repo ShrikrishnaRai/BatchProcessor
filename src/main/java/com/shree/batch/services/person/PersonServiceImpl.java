@@ -12,6 +12,7 @@ import com.shree.batch.utils.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,16 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Person> listPerson(int page, int limit) {
-        Pageable pageable = PageRequest.of(page, limit);
+    public List<Person> listPerson(int page, int limit, String sortBy) {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy).ascending());
         Page<PersonEntity> personPage = personRepository.findAll(pageable);
-        List<PersonEntity> personList = personPage.getContent();
-        return personList
-                .stream()
-                .map(personEntity -> mapper.map(personEntity, Person.class)).collect(Collectors.toList());
+        if (personPage.hasContent()) {
+            List<PersonEntity> personList = personPage.getContent();
+            return personList
+                    .stream()
+                    .map(personEntity -> mapper.map(personEntity, Person.class)).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -105,7 +109,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public byte[] downloadPersonDetails(int page, int limit) throws JsonProcessingException {
-        List<Person> employees = this.listPerson(page, limit);
+        List<Person> employees = this.listPerson(page, limit, "");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(employees);
         return json.getBytes();
